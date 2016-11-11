@@ -20,6 +20,11 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createMainWindow();
+  }
+});
 
 const installExtensions = async () => {
   if (process.env.NODE_ENV === 'development') {
@@ -38,9 +43,7 @@ const installExtensions = async () => {
   }
 };
 
-app.on('ready', async () => {
-  await installExtensions();
-
+const createMainWindow = () => {
   mainWindow = new BrowserWindow({
     show: false,
     width: 1024,
@@ -71,6 +74,12 @@ app.on('ready', async () => {
       }]).popup(mainWindow);
     });
   }
+};
+
+app.on('ready', async () => {
+  await installExtensions();
+
+  createMainWindow();
 
   if (process.platform === 'darwin') {
     template = [{
