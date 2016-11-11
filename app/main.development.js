@@ -50,7 +50,18 @@ const createMainWindow = () => {
     height: 728
   });
 
-  mainWindow.loadURL(`file://${__dirname}/app.html`);
+  const appURL = `file://${__dirname}/app.html`;
+  const loginURL = 'auth url';
+  const loggedInURLReg = new RegExp('logged in url');
+  mainWindow.loadURL(loginURL);
+  // navigate to app on login success (therefore valid login session were created)
+  const detectLoggedIn = (_event, _status, newURL, _originalURL, responseCode) => {
+    if (responseCode === 200 && loggedInURLReg.test(newURL)) {
+      mainWindow.loadURL(appURL);
+      mainWindow.webContents.removeListener('did-get-response-details', detectLoggedIn);
+    }
+  };
+  mainWindow.webContents.on('did-get-response-details', detectLoggedIn);
 
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
