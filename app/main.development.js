@@ -55,13 +55,13 @@ const createMainWindow = () => {
   const loggedInURLReg = new RegExp('logged in url');
   mainWindow.loadURL(loginURL);
   // navigate to app on login success (therefore valid login session were created)
-  const detectLoggedIn = (_event, _status, newURL, _originalURL, responseCode) => {
-    if (responseCode === 200 && loggedInURLReg.test(newURL)) {
+  const detectLoggedIn = (_event, url) => {
+    if (loggedInURLReg.test(url)) {
       mainWindow.loadURL(appURL);
-      mainWindow.webContents.removeListener('did-get-response-details', detectLoggedIn);
+      mainWindow.webContents.removeListener('did-navigate', detectLoggedIn);
     }
   };
-  mainWindow.webContents.on('did-get-response-details', detectLoggedIn);
+  mainWindow.webContents.on('did-navigate', detectLoggedIn);
 
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
