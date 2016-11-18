@@ -51,12 +51,13 @@ const createMainWindow = () => {
   });
 
   const appURL = `file://${__dirname}/app.html`;
-  const loginURL = 'auth url';
+  const loginURL = 'https://google.com/';
   const loggedInURLReg = new RegExp('logged in url');
   mainWindow.loadURL(loginURL);
   // navigate to app on login success (therefore valid login session were created)
   const detectLoggedIn = (_event, url) => {
-    if (loggedInURLReg.test(url)) {
+    // if (loggedInURLReg.test(url)) {
+    if (true) {
       mainWindow.loadURL(appURL);
       mainWindow.webContents.removeListener('did-navigate', detectLoggedIn);
     }
